@@ -43,6 +43,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.ApplicationInsights, Version=0.14.3.177, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.0.14.3-build00177\lib\net40\Microsoft.ApplicationInsights.dll</HintPath>
       <Private>True</Private>
@@ -166,11 +174,44 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BarometerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\IndoorTemperatureController.cs" />
+    <Compile Include="Controllers\IndoorTemperatureModelsController.cs" />
+    <Compile Include="Controllers\OutdoorTemperatureController.cs" />
+    <Compile Include="Controllers\OutdoorTemperatureModelsController.cs" />
+    <Compile Include="Controllers\RainfallModelsController.cs" />
+    <Compile Include="Controllers\RecentExtremesController.cs" />
+    <Compile Include="Controllers\RecentExtremesModelsController.cs" />
+    <Compile Include="Controllers\WeatherController.cs" />
+    <Compile Include="Controllers\WindController.cs" />
+    <Compile Include="Controllers\WindModelsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201505121944582_Initial.cs" />
+    <Compile Include="Migrations\201505121944582_Initial.Designer.cs">
+      <DependentUpon>201505121944582_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505122150583_Initial1.cs" />
+    <Compile Include="Migrations\201505122150583_Initial1.Designer.cs">
+      <DependentUpon>201505122150583_Initial1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201505132108125_Initial2.cs" />
+    <Compile Include="Migrations\201505132108125_Initial2.Designer.cs">
+      <DependentUpon>201505132108125_Initial2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\BarometerModel.cs" />
+    <Compile Include="Models\IndoorTemperatureModel.cs" />
+    <Compile Include="Models\OutdoorTemperatureModel.cs" />
+    <Compile Include="Models\RainfallModel.cs" />
+    <Compile Include="Models\RecentExtremesModel.cs" />
+    <Compile Include="Models\WeatherappContext.cs" />
+    <Compile Include="Models\WeatherModel.cs" />
+    <Compile Include="Models\WindModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValidateHttpAntiForgeryTokenAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -191,6 +232,8 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-3.3.0.debug.js" />
+    <Content Include="Scripts\knockout-3.3.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
@@ -210,10 +253,35 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Views\Home\Create.cshtml" />
+    <Content Include="Views\Home\Delete.cshtml" />
+    <Content Include="Views\Home\Details.cshtml" />
+    <Content Include="Views\Home\Edit.cshtml" />
+    <Content Include="Views\Shared\IndoorTemperature.cshtml" />
+    <Content Include="Views\IndoorTemperature\Create.cshtml" />
+    <Content Include="Views\IndoorTemperature\Delete.cshtml" />
+    <Content Include="Views\IndoorTemperature\Details.cshtml" />
+    <Content Include="Views\IndoorTemperature\Edit.cshtml" />
+    <Content Include="Views\IndoorTemperature\Index.cshtml" />
+    <Content Include="Views\OutdoorTemperature\Create.cshtml" />
+    <Content Include="Views\OutdoorTemperature\Delete.cshtml" />
+    <Content Include="Views\OutdoorTemperature\Details.cshtml" />
+    <Content Include="Views\OutdoorTemperature\Edit.cshtml" />
+    <Content Include="Views\OutdoorTemperature\Index.cshtml" />
+    <Content Include="Views\Barometer\Create.cshtml" />
+    <Content Include="Views\Barometer\Delete.cshtml" />
+    <Content Include="Views\Barometer\Details.cshtml" />
+    <Content Include="Views\Barometer\Edit.cshtml" />
+    <Content Include="Views\Barometer\Index.cshtml" />
+    <Content Include="Views\Wind\Create.cshtml" />
+    <Content Include="Views\Wind\Delete.cshtml" />
+    <Content Include="Views\Wind\Details.cshtml" />
+    <Content Include="Views\Wind\Edit.cshtml" />
+    <Content Include="Views\Wind\Index.cshtml" />
+    <Content Include="Views\RecentExtremes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -221,6 +289,17 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201505121944582_Initial.resx">
+      <DependentUpon>201505121944582_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505122150583_Initial1.resx">
+      <DependentUpon>201505122150583_Initial1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201505132108125_Initial2.resx">
+      <DependentUpon>201505132108125_Initial2.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Weatherapp.Models.RecentExtremesModel>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.HighWind)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.HighGust)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Bearing)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MinTemp)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MaxTemp)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MinPressure)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MaxPressure)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RainRate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Self)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.HighWind)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HighGust)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bearing)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MinTemp)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MaxTemp)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MinPressure)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MaxPressure)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RainRate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateAndTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Self)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.RecentExtremesModelId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.RecentExtremesModelId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.RecentExtremesModelId })
+        </td>
+    </tr>
+}
+
+</table>

@@ -52,3 +52,11 @@ D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\Weatherapp.csprojResolveA
 D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\ApplicationInsights.config
 D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\Weatherapp.dll
 D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\Weatherapp.pdb
+D:\Source\Weatherapp\Weatherapp\Weatherapp\bin\EntityFramework.dll
+D:\Source\Weatherapp\Weatherapp\Weatherapp\bin\EntityFramework.SqlServer.dll
+D:\Source\Weatherapp\Weatherapp\Weatherapp\bin\EntityFramework.xml
+D:\Source\Weatherapp\Weatherapp\Weatherapp\bin\EntityFramework.SqlServer.xml
+D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\Weatherapp.Migrations.Initial.resources
+D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\Weatherapp.Migrations.Initial1.resources
+D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\Weatherapp.Migrations.Initial2.resources
+D:\Source\Weatherapp\Weatherapp\Weatherapp\obj\Release\Weatherapp.csproj.GenerateResource.Cache

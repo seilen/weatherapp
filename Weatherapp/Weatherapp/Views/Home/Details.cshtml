@@ -1,0 +1,82 @@
+﻿@model Weatherapp.Models.WeatherModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>WeatherModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateAndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OutdoorTemperatureModel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OutdoorTemperatureModel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IndoorTemperatureModel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IndoorTemperatureModel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WindModel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WindModel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BarometerModel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BarometerModel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RainfallModel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RainfallModel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RecentExtremesModel)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RecentExtremesModel)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Self)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Self)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.WeatherModelId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

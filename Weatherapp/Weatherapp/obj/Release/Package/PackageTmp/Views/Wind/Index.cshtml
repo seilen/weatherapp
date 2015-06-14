@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Weatherapp.Models.WindModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestWind)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Bearing)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Gust)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AverageWind)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AvgDirection)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WindRun)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Self)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.LatestWind)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bearing)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Gust)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AverageWind)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AvgDirection)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WindRun)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateAndTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Self)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.WindModelId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.WindModelId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.WindModelId })
+        </td>
+    </tr>
+}
+
+</table>

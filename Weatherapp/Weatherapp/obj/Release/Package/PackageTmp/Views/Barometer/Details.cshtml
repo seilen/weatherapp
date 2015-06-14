@@ -1,0 +1,50 @@
+﻿@model Weatherapp.Models.BarometerModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BarometerModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Pressure)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pressure)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PressureTrend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PressureTrend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateAndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Self)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Self)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.BarometerModelId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

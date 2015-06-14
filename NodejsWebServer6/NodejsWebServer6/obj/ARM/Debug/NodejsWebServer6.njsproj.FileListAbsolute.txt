@@ -1,0 +1,17 @@
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\bin\Microsoft.NodejsTools.WebRole.dll
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\bin\resources.pri
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\bin\AppxManifest.xml
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\bin\NodejsWebServer6.build.appxrecipe
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\NodejsWebServer6.njsproj.GenerateResource.Cache
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\priconfig.xml
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\priconfig.xml.intermediate
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\layout.resfiles
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\layout.resfiles.intermediate
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\resources.resfiles
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\resources.resfiles.intermediate
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\pri.resfiles
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\pri.resfiles.intermediate
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\qualifiers.txt
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\qualifiers.txt.intermediate
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\MultipleQualifiersPerDimensionFound.txt
+D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\ProjectArchitectures.txt

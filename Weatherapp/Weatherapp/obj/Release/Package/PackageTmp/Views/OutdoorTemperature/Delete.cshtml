@@ -1,0 +1,104 @@
+﻿@model Weatherapp.Models.OutdoorTemperatureModel
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>OutdoorTemperatureModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Temperature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Temperature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TemperatureTrend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TemperatureTrend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AvgTemperature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AvgTemperature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WindChill)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WindChill)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HeatIndex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HeatIndex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DewPoint)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DewPoint)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RelHumidity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RelHumidity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApparentTemperature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApparentTemperature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateAndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Self)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Self)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

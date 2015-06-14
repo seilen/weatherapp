@@ -29,6 +29,9 @@ namespace Weatherapp
 
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
             "~/Scripts/knockout-{version}.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/chart").Include(
+            "~/Scripts/chart.js"));
         }
     }
 }

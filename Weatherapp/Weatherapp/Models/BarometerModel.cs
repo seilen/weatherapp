@@ -8,8 +8,8 @@ namespace Weatherapp.Models
     public class BarometerModel
     {
         //Barometer - Steady
-        public double Pressure { get; set; }
-        public double PressureTrend { get; set; }
+        public double RelativePressure { get; set; }
+        public double AbsolutePressure { get; set; }
 
         public int BarometerModelId { get; set; }
         public DateTime DateAndTime { get; set; }
@@ -23,17 +23,17 @@ namespace Weatherapp.Models
             set { }
         }
 
-        public BarometerModel(double pressure, double pressureTrend, DateTime dateAndTime)
+        public BarometerModel(double relativePressure, double absolutePressure, DateTime dateAndTime)
         {
-            Pressure = pressure;
-            PressureTrend = pressureTrend;
+            RelativePressure = relativePressure;
+            AbsolutePressure = absolutePressure;
             DateAndTime = dateAndTime;
         }
 
         public BarometerModel()
         {
-            Pressure = 0.0;
-            PressureTrend = 0.0;
+            RelativePressure = 0.0;
+            AbsolutePressure = 0.0;
             DateAndTime = DateTime.Now;
         }
     }

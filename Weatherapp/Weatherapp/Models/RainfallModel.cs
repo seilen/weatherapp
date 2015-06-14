@@ -7,17 +7,22 @@ namespace Weatherapp.Models
 {
     public class RainfallModel
     {
+        public double HourRainfall;
+        public double DayRainfall;
+        public double WeekRainfall;
+        public double TotalRainfall;
+        public DateTime DateAndTime;
+
         //Rainfall
-        public double RainfallRate { get; set; }
+        /*public double RainfallRate { get; set; }
         public double RainfallLastHour { get; set; }
         public double RainfallToday { get; set; }
         public double RainfallLast24Hours { get; set; }
         public double RainfallYesterday { get; set; }
         public double RainfallThisMonth { get; set; }
         public double RainfallThisYear { get; set; }
-
+        */
         public int RainfallModelId { get; set; }
-        public DateTime DateAndTime { get; set; }
         public string Self
         {
             get
@@ -28,7 +33,7 @@ namespace Weatherapp.Models
             set { }
         }
 
-        public RainfallModel(double rainRate, double rainLastHour, double rainToday, double rainLast24Hours, double rainYesterday, double rainThisMonth, double rainThisYear, DateTime dateAndTime)
+        /*public RainfallModel(double rainRate, double rainLastHour, double rainToday, double rainLast24Hours, double rainYesterday, double rainThisMonth, double rainThisYear, DateTime dateAndTime)
         {
             RainfallRate = rainRate;
             RainfallLastHour = rainLastHour;
@@ -39,17 +44,23 @@ namespace Weatherapp.Models
             RainfallThisYear = rainThisYear;
             DateAndTime = dateAndTime;
         }
-
+        */
         public RainfallModel()
         {
-            RainfallRate = 0.0;
-            RainfallLastHour = 0.0;
-            RainfallToday = 0.0;
-            RainfallLast24Hours = 0.0;
-            RainfallYesterday = 0.0;
-            RainfallThisMonth = 0.0;
-            RainfallThisYear = 0.0;
+            HourRainfall = 0.0;
+            DayRainfall = 0.0;
+            WeekRainfall = 0.0;
+            TotalRainfall = 0.0;
             DateAndTime = DateTime.Now;
+        }
+
+        public RainfallModel(double hourRainfall, double dayRainfall, double weekRainfall, double totalRainfall, DateTime time)
+        {
+            HourRainfall = hourRainfall;
+            DayRainfall = dayRainfall;
+            WeekRainfall = weekRainfall;
+            TotalRainfall = totalRainfall;
+            DateAndTime = time;
         }
     }
 }

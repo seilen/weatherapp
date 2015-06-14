@@ -1,58 +1,5 @@
 ﻿@model IEnumerable<Weatherapp.Models.IndoorTemperatureModel>
 
-@{
-    ViewBag.Title = "IndoorTemperature";
-}
-@section Scripts {
-    @Scripts.Render("~/bundles/knockout")
-    <script type="text/javascript">
-        @functions{
-            public string TokenHeaderValue()
-            {
-                string cookieToken, formToken;
-                AntiForgery.GetTokens(null, out cookieToken, out formToken);
-                return cookieToken + ":" + formToken;
-            }
-        }
-        function IndoorTemperatureViewModel() {
-            var self = this;
-            self.IndoorTemperatureModel = ko.observableArray([]);
-            self.addIndoorTemperatureModel = function () {
-                $.ajax({
-                    type: "post",
-                    url: "api/IndoorTemperatureModels",
-                    data: $("#addIndoorTemperatureModel").serialize(),
-                    datatype: "json",
-                    success: function (value) {
-                        self.IndoorTemperatureModel.push(value);
-                    },
-                    headers: {
-                        'RequestVerificationToken': '@TokenHeaderValue()'
-                    }
-                    });
-            }
-            self.removeIndoorTemperatureModel = function (IndoorTemperatureModel) {
-            $.ajax({
-            type: "DELETE",
-            url: IndoorTemperatureModel.Self,
-            success: function () {
-                 self.IndoorTemperatureModel.remove(IndoorTemperatureModel);
-            },
-            headers: {
-                'RequestVerificationToken': '@TokenHeaderValue()'
-            }
-            });
-            }
-
-            $.getJSON("api/IndoorTemperatureModels", function (data) {
-            self.IndoorTemperatureModel(data);
-            });
-            }
-        ko.applyBindings(new IndoorTemperatureViewModel());
-
-</script>
-}
-
 <table class="table">
     <tr>
         <th>
@@ -62,11 +9,14 @@
             @Html.DisplayNameFor(model => model.Temperature)
         </th>
 </table>
-<ul id="IndoorTemperatureModels" data-bind="foreach: IndoorTemperatureModel">
-    <li class="ui-widget-content ui-corner-all">
-        <h1 data-bind="text: $data.Temperature" class="ui-widget-header"></h1>
-        <div><span data-bind="text: $data.Temperature || 'Temperature?'"></span></div>
-
-        <p><a data-bind="attr: { href: Self }, click: $root.removeIndoorTemperatureModel" class="removeWeather ui-state-default ui-corner-all">Remove</a></p>
-    </li>
-</ul>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DateAndTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Temperature)
+        </td>
+    </tr>
+}

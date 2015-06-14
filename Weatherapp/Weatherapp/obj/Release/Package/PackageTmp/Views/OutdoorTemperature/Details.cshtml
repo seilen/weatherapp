@@ -1,0 +1,98 @@
+﻿@model Weatherapp.Models.OutdoorTemperatureModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>OutdoorTemperatureModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Temperature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Temperature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TemperatureTrend)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TemperatureTrend)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AvgTemperature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AvgTemperature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WindChill)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WindChill)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HeatIndex)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HeatIndex)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DewPoint)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DewPoint)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RelHumidity)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RelHumidity)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ApparentTemperature)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ApparentTemperature)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateAndTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateAndTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Self)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Self)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.OutdoorTemperatureModelId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

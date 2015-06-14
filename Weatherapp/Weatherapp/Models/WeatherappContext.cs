@@ -29,8 +29,6 @@ namespace Weatherapp.Models
 
         public System.Data.Entity.DbSet<Weatherapp.Models.WindModel> WindModels { get; set; }
 
-        public System.Data.Entity.DbSet<Weatherapp.Models.RecentExtremesModel> RecentExtremesModels { get; set; }
-
         public System.Data.Entity.DbSet<Weatherapp.Models.BarometerModel> BarometerModels { get; set; }
     }
 }

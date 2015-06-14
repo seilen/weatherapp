@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Machine>HB-WIN10</Machine>
+    <WindowsUser>HegeBeate</WindowsUser>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <SolutionConfiguration>Debug|ARM</SolutionConfiguration>
+    <PackageArchitecture>arm</PackageArchitecture>
+    <PackageIdentityName>a6d7f8c2-8661-46e4-a541-529725dbb680</PackageIdentityName>
+    <IntermediateOutputPath>D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\obj\ARM\Debug\</IntermediateOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <AppXManifest Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\bin\AppxManifest.xml">
+      <PackagePath>AppxManifest.xml</PackagePath>
+      <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
+    </AppXManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\concrt140d_app.dll">
+      <PackagePath>concrt140d_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\concrt140_app.dll">
+      <PackagePath>concrt140_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\msvcp140d_app.dll">
+      <PackagePath>msvcp140d_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\msvcp140_app.dll">
+      <PackagePath>msvcp140_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\ucrtbased.dll">
+      <PackagePath>ucrtbased.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vcamp140d_app.dll">
+      <PackagePath>vcamp140d_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vcamp140_app.dll">
+      <PackagePath>vcamp140_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vccorlib140d_app.dll">
+      <PackagePath>vccorlib140d_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vccorlib140_app.dll">
+      <PackagePath>vccorlib140_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vcomp140d_app.dll">
+      <PackagePath>vcomp140d_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vcomp140_app.dll">
+      <PackagePath>vcomp140_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vcruntime140d_app.dll">
+      <PackagePath>vcruntime140d_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\UAP\v0.8.0.0\ExtensionSDKs\Microsoft.VCLibs.AppLocal\14.0\Redist\Debug\ARM\vcruntime140_app.dll">
+      <PackagePath>vcruntime140_app.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\package.json">
+      <PackagePath>package.json</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\Assets\Logo.scale-100.png">
+      <PackagePath>Assets\Logo.scale-100.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\Assets\SmallLogo.scale-100.png">
+      <PackagePath>Assets\SmallLogo.scale-100.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\Assets\SplashScreen.scale-100.png">
+      <PackagePath>Assets\SplashScreen.scale-100.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\Assets\StoreLogo.scale-100.png">
+      <PackagePath>Assets\StoreLogo.scale-100.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\Assets\WideLogo.scale-100.png">
+      <PackagePath>Assets\WideLogo.scale-100.png</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\server.js">
+      <PackagePath>server.js</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\NodejsUAP\ARM\node.dll">
+      <PackagePath>node.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\NodejsUAP\ARM\winrtwrap.dll">
+      <PackagePath>winrtwrap.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\NodejsUAP\ARM\winuniversalnode.dll">
+      <PackagePath>winuniversalnode.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\VC\redist\onecore\ARM\Microsoft.VC140.CRT\msvcp140.dll">
+      <PackagePath>msvcp140.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\VC\redist\onecore\ARM\Microsoft.VC140.CRT\vccorlib140.dll">
+      <PackagePath>vccorlib140.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\VC\redist\onecore\ARM\Microsoft.VC140.CRT\vcruntime140.dll">
+      <PackagePath>vcruntime140.dll</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\bin\startupinfo.xml">
+      <PackagePath>startupinfo.xml</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\node_modules\uwp.node">
+      <PackagePath>node_modules\uwp.node</PackagePath>
+    </AppxPackagedFile>
+    <AppxPackagedFile Include="D:\Source\Weatherapp\NodejsWebServer6\NodejsWebServer6\bin\resources.pri">
+      <PackagePath>resources.pri</PackagePath>
+    </AppxPackagedFile>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

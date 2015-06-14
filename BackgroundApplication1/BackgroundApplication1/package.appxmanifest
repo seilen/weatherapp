@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10"
+  IgnorableNamespaces="uap mp iot">
+
+  <Identity
+    Name="BackgroundApplication1"
+    Version="1.0.0.0"
+    Publisher="CN=HegeBeate" />
+
+  <mp:PhoneIdentity PhoneProductId="54a12874-d5f9-4fdc-a60c-176161b95308" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
+  <Properties>
+    <DisplayName>BackgroundApplication1</DisplayName>
+    <PublisherDisplayName>HegeBeate</PublisherDisplayName>
+    <Logo>images\storelogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10069.0" MaxVersionTested="10.0.10069.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+
+  <Applications>
+    <Application Id="App">
+
+      <uap:VisualElements
+        DisplayName="BackgroundApplication1"
+        Description="BackgroundApplication1"
+        BackgroundColor="#464646"
+        Square150x150Logo="images\Logo.png"
+        Square44x44Logo="images\SmallLogo.png"
+        AppListEntry="none">
+
+        <uap:SplashScreen Image="images\splashscreen.png" />
+
+      </uap:VisualElements>
+      <Extensions>
+        <Extension Category="windows.backgroundTasks" StartPage="js\startuptask.js">
+          <BackgroundTasks>
+            <iot:Task Type="startup"/>
+          </BackgroundTasks>
+        </Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <Capability Name="internetClient" />
+  </Capabilities>
+
+</Package>

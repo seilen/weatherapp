@@ -1,0 +1,16 @@
+msvcp140.dll
+vccorlib140.dll
+vcruntime140.dll
+node.dll
+winrtwrap.dll
+winuniversalnode.dll
+Assets\Logo.scale-100.png
+Assets\SmallLogo.scale-100.png
+Assets\SplashScreen.scale-100.png
+Assets\StoreLogo.scale-100.png
+Assets\WideLogo.scale-100.png
+startupinfo.xml
+node_modules\uwp.node
+package.json
+server.js
+server.js

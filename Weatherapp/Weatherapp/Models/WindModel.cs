@@ -7,16 +7,21 @@ namespace Weatherapp.Models
 {
     public class WindModel
     {
-        //Wind
-        public double LatestWind { get; set; }
-        public double Bearing { get; set; }
+        public double WindSpeed;
         public double Gust { get; set; }
+        public string WindDirection;
+        public double DewPoint;
+        public double WindChill;
+        public DateTime DateAndTime;
+
+        //Wind
+        /*public double LatestWind { get; set; }
+        public double Bearing { get; set; }
         public double AverageWind { get; set; }
         public double AvgDirection { get; set; }
         public double WindRun { get; set; }
-
+        */
         public int WindModelId { get; set; }
-        public DateTime DateAndTime { get; set; }
         public string Self
         {
             get
@@ -27,7 +32,7 @@ namespace Weatherapp.Models
             set { }
         }
 
-        public WindModel(double latestWind, double bearing, double gust, double averageWind, double avgDirection, double windRun, DateTime dateAndTime)
+       /* public WindModel(double latestWind, double bearing, double gust, double averageWind, double avgDirection, double windRun, DateTime dateAndTime)
         {
             LatestWind = latestWind;
             Bearing = bearing;
@@ -36,17 +41,26 @@ namespace Weatherapp.Models
             AvgDirection = avgDirection;
             WindRun = windRun;
             DateAndTime = dateAndTime;
-        }
+        }*/
 
         public WindModel()
         {
-            LatestWind = 0.0;
-            Bearing = 0.0;
+            WindSpeed = 0.0;
             Gust = 0.0;
-            AverageWind = 0.0;
-            AvgDirection = 0.0;
-            WindRun = 0.0;
+            WindDirection = "N";
+            DewPoint = 0.0;
+            WindChill = 0.0;
             DateAndTime = DateTime.Now;
+        }
+
+        public WindModel(double windSpeed, double gust, string windDirection, double dewPoint, double windChill, DateTime time)
+        {
+            WindSpeed = windSpeed;
+            Gust = gust;
+            WindDirection = windDirection;
+            DewPoint = dewPoint;
+            WindChill = windChill;
+            DateAndTime = time;
         }
     }
 }

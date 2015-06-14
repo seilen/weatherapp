@@ -31,8 +31,11 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("IndoorTemperature", "Index", "IndoorTemperature")</li>
+                    <li>@Html.ActionLink("OutdoorTemperature", "Index", "OutdoorTemperature")</li>
+                    <li>@Html.ActionLink("Wind", "Index", "Wind")</li>
+                    <li>@Html.ActionLink("Barometer", "Index", "Barometer")</li>
+                    <li>@Html.ActionLink("RecentExtremes", "Index", "RecentExtremes")</li>
                 </ul>
             </div>
         </div>
@@ -44,7 +47,7 @@
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
-
+    
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

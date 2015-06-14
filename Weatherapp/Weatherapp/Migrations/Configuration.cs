@@ -29,19 +29,19 @@ namespace Weatherapp.Migrations
             //
 
             context.WeatherModels.AddOrUpdate(
-                w => w.DateAndTime,
+                w => w.WeatherModelId,
                 new WeatherModel {
                     DateAndTime = DateTime.Now,
+                    Interval = 30,
                     OutdoorTemperatureModel = new OutdoorTemperatureModel(),
                     IndoorTemperatureModel = new IndoorTemperatureModel(),
                     BarometerModel = new BarometerModel(),
                     WindModel = new WindModel(),
                     RainfallModel = new RainfallModel(),
-                    RecentExtremesModel = new RecentExtremesModel()
                 }
                 );
             context.IndoorTemperatureModels.AddOrUpdate(
-                i => i.DateAndTime,
+                i => i.IndoorTemperatureModelId,
                 new IndoorTemperatureModel
                 {
                     DateAndTime = DateTime.Now,
@@ -50,59 +50,34 @@ namespace Weatherapp.Migrations
                 }
                 );
             context.OutdoorTemperatureModels.AddOrUpdate(
-                i => i.DateAndTime,
+                i => i.OutdoorTemperatureModelId,
                 new OutdoorTemperatureModel
                 {
-                    Temperature = 20.0,
-                    TemperatureTrend = 10.0,
-                    AvgTemperature = 15.0,
-                    WindChill = 10.0,
-                    HeatIndex = 20.0,
-                    DewPoint = 10.0,
-                    RelHumidity = 20.0,
-                    ApparentTemperature = 10.0,
-                    DateAndTime = DateTime.Now
+                    OutdoorTemp = 20.0,
+                    OutdoorHumidity = 50
                 }
                 );
             context.RainfallModels.AddOrUpdate(
-                i => i.DateAndTime,
+                i => i.RainfallModelId,
                 new RainfallModel
                 {
-                    RainfallRate = 0.0,
-                    RainfallLastHour = 0.0,
-                    RainfallToday = 0.0,
-                    RainfallLast24Hours = 0.0,
-                    RainfallYesterday = 0.0,
-                    RainfallThisMonth = 0.0,
-                    RainfallThisYear = 0.0,
+                    HourRainfall = 0.0,
+                    DayRainfall = 0.0,
+                    WeekRainfall = 0.0,
+                    TotalRainfall = 0.0,
                     DateAndTime = DateTime.Now
                 }
                 );
-            context.RecentExtremesModels.AddOrUpdate(
-                i => i.DateAndTime,
-                new RecentExtremesModel
-                {
-                    HighWind = 0.0,
-                    HighGust = 0.0,
-                    Bearing = 0.0,
-                    MinTemp = 0.0,
-                    MaxTemp = 0.0,
-                    MinPressure = 0.0,
-                    MaxPressure = 0.0,
-                    RainRate = 0.0,
-                    DateAndTime = DateTime.Now
-                }
-                );
+            
             context.WindModels.AddOrUpdate(
-                i => i.DateAndTime,
+                i => i.WindModelId,
                 new WindModel
                 {
-                    LatestWind = 0.0,
-                    Bearing = 0.0,
-                    Gust = 0.0,
-                    AverageWind = 0.0,
-                    AvgDirection = 0.0,
-                    WindRun = 0.0,
+                    WindSpeed = 2.0,
+                    Gust = 3.0,
+                    WindDirection = "N",
+                    DewPoint = 10.0,
+                    WindChill = 3.0,
                     DateAndTime = DateTime.Now,
                 }
                 );

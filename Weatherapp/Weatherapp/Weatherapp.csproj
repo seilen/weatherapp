@@ -174,18 +174,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\BarometerController.cs" />
+    <Compile Include="Controllers\FrontPageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\IndoorTemperatureController.cs" />
-    <Compile Include="Controllers\IndoorTemperatureModelsController.cs" />
-    <Compile Include="Controllers\OutdoorTemperatureController.cs" />
-    <Compile Include="Controllers\OutdoorTemperatureModelsController.cs" />
-    <Compile Include="Controllers\RainfallModelsController.cs" />
-    <Compile Include="Controllers\RecentExtremesController.cs" />
-    <Compile Include="Controllers\RecentExtremesModelsController.cs" />
     <Compile Include="Controllers\WeatherController.cs" />
-    <Compile Include="Controllers\WindController.cs" />
-    <Compile Include="Controllers\WindModelsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -201,11 +192,45 @@
     <Compile Include="Migrations\201505132108125_Initial2.Designer.cs">
       <DependentUpon>201505132108125_Initial2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201506031953031_Initial3.cs" />
+    <Compile Include="Migrations\201506031953031_Initial3.Designer.cs">
+      <DependentUpon>201506031953031_Initial3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506032000112_Initial4.cs" />
+    <Compile Include="Migrations\201506032000112_Initial4.Designer.cs">
+      <DependentUpon>201506032000112_Initial4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506032003165_Initial5.cs" />
+    <Compile Include="Migrations\201506032003165_Initial5.Designer.cs">
+      <DependentUpon>201506032003165_Initial5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506032009300_Initial6.cs" />
+    <Compile Include="Migrations\201506032009300_Initial6.Designer.cs">
+      <DependentUpon>201506032009300_Initial6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506032030599_Initial7.cs" />
+    <Compile Include="Migrations\201506032030599_Initial7.Designer.cs">
+      <DependentUpon>201506032030599_Initial7.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506032033390_Initial8.cs" />
+    <Compile Include="Migrations\201506032033390_Initial8.Designer.cs">
+      <DependentUpon>201506032033390_Initial8.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506032034143_Initial9.cs" />
+    <Compile Include="Migrations\201506032034143_Initial9.Designer.cs">
+      <DependentUpon>201506032034143_Initial9.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201506032041206_Initial10.cs" />
+    <Compile Include="Migrations\201506032041206_Initial10.Designer.cs">
+      <DependentUpon>201506032041206_Initial10.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BarometerModel.cs" />
+    <Compile Include="Models\FrontPage.cs" />
     <Compile Include="Models\IndoorTemperatureModel.cs" />
     <Compile Include="Models\OutdoorTemperatureModel.cs" />
     <Compile Include="Models\RainfallModel.cs" />
+    <Compile Include="Models\RawWeatherData.cs" />
     <Compile Include="Models\RecentExtremesModel.cs" />
     <Compile Include="Models\WeatherappContext.cs" />
     <Compile Include="Models\WeatherModel.cs" />
@@ -216,6 +241,7 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\MyStyle.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -225,6 +251,7 @@
     <Content Include="ApplicationInsights.config" />
     <None Include="Properties\PublishProfiles\karolinesweather.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\Chart.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -235,6 +262,7 @@
     <Content Include="Scripts\knockout-3.3.0.debug.js" />
     <Content Include="Scripts\knockout-3.3.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\Myscript.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -279,6 +307,7 @@
     <Content Include="Views\Wind\Edit.cshtml" />
     <Content Include="Views\Wind\Index.cshtml" />
     <Content Include="Views\RecentExtremes\Index.cshtml" />
+    <Content Include="Views\FrontPage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -299,6 +328,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201505132108125_Initial2.resx">
       <DependentUpon>201505132108125_Initial2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506031953031_Initial3.resx">
+      <DependentUpon>201506031953031_Initial3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506032000112_Initial4.resx">
+      <DependentUpon>201506032000112_Initial4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506032003165_Initial5.resx">
+      <DependentUpon>201506032003165_Initial5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506032009300_Initial6.resx">
+      <DependentUpon>201506032009300_Initial6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506032030599_Initial7.resx">
+      <DependentUpon>201506032030599_Initial7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506032033390_Initial8.resx">
+      <DependentUpon>201506032033390_Initial8.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506032034143_Initial9.resx">
+      <DependentUpon>201506032034143_Initial9.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201506032041206_Initial10.resx">
+      <DependentUpon>201506032041206_Initial10.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

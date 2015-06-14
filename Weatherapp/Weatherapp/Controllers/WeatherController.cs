@@ -39,19 +39,19 @@ namespace Weatherapp.Controllers
         // PUT: api/Weather/5
         [ValidateHttpAntiForgeryToken]
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutWeatherModel(int id, WeatherModel weatherModel)
+        public IHttpActionResult PutWeatherModel(int id, RawWeatherData weatherData)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != weatherModel.WeatherModelId)
+            if (id != weatherData.No)
             {
                 return BadRequest();
             }
 
-            db.Entry(weatherModel).State = EntityState.Modified;
+            db.Entry(weatherData).State = EntityState.Modified;
 
             try
             {
@@ -73,15 +73,15 @@ namespace Weatherapp.Controllers
         }
 
         // POST: api/Weather
-        [ValidateHttpAntiForgeryToken]
+        //[ValidateHttpAntiForgeryToken]
         [ResponseType(typeof(WeatherModel))]
-        public IHttpActionResult PostWeatherModel(WeatherModel weatherModel)
+        public IHttpActionResult PostWeatherModel(RawWeatherData weatherData)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            var weatherModel = new WeatherModel(weatherData);
             db.WeatherModels.Add(weatherModel);
             db.SaveChanges();
 

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-  <parameter name="IIS Web Application Name" description="" value="karolinesweather" tags="IisApp">
+  <parameter name="IIS Web Application Name" description="" value="karolinesweathersite" tags="IisApp">
     <parameterEntry kind="ProviderPath" scope="IisApp" match="^D:\\Source\\Weatherapp\\Weatherapp\\Weatherapp\\obj\\Release\\Package\\PackageTmp$" />
     <parameterEntry kind="ProviderPath" scope="setAcl" match="^D:\\Source\\Weatherapp\\Weatherapp\\Weatherapp\\obj\\Release\\Package\\PackageTmp$" />
   </parameter>
-  <parameter name="WeatherappContext-Web.config Connection String" description="" value="Data Source=tcp:azr-weatherdb01.database.windows.net,1433;Initial Catalog=azr-weatherDB;Persist Security Info=True;User ID=HBAdmin;Password=Newuser12;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False" tags="">
+  <parameter name="WeatherappContext-Web.config Connection String" description="" value="Data Source=tcp:sqlweatherapp.database.windows.net,1433;Initial Catalog=dbWeatherapp;Persist Security Info=True;User ID=HBAdmin;Password=Newuser12;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False" tags="">
     <parameterEntry kind="XmlFile" scope="D:\\Source\\Weatherapp\\Weatherapp\\Weatherapp\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='WeatherappContext']/@connectionString" />
   </parameter>
 </parameters>

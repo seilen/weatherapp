@@ -1,0 +1,147 @@
+body {
+    font-family: Verdana, Helvetica;
+    font-size: 62.5%;
+    background-color: #6698FF;    
+}
+
+.chart-refresh-container {
+    position:absolute;
+    top:10px;
+    right:10px;
+    width: 80px;      
+}
+
+.double_gauge {
+    width: 400px;
+    float: left;
+}
+
+.icons {
+    width: 45px;
+    display: none;
+    position: absolute;
+}
+
+.imperial {
+    width: 800px;
+    margin: 0 auto;
+    display: none;
+}
+
+.imperial_table {
+    display: none;
+}
+
+.imperial_gauge {
+    width: 600px;
+    margin: 0 auto;
+    display: none;
+}
+
+.linegraph {
+    width: 800px;
+    margin: 0 auto;
+}
+
+.metric {
+    width: 800px;
+    margin: 0 auto;
+    display: none;
+}
+
+.metric_table {
+    display: none;
+}
+
+.metric_gauge {
+    width: 600px;
+    margin: 0 auto;
+    display: none;
+}
+
+.progress-label {
+    position: absolute;
+    left: 35%;
+    top: 4px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.progressbar-hide {
+    width: 696px;
+}
+
+.single_gauge {
+    width: 200px;
+    margin-right: auto;
+    margin-left: 400px;
+    position: relative;
+}
+
+.ui-progressbar {
+    position: relative;
+}
+
+.ui-icon ui-icon-alert {
+    float: left;
+    margin: 0 7px 20px 0;
+}
+
+#page-container {
+    width: 1152px;
+    margin: 0 auto;	
+}
+
+#accordion {
+    width: 800px;
+    margin: 0 auto;
+}
+
+#button-container {
+    width: 300px;
+    margin: 0 auto;	
+}
+
+#footer {
+    color: #E5E4E2;
+    margin-left: 10px;
+}
+
+#gauge-container {
+    width: 700px;
+    margin: 0 auto;	
+}
+
+#map-canvas {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#refresh-control {
+    width: 700px;
+    margin: 0 auto;
+    display: none;	
+}
+
+#station-title {
+    font-size: 20px;
+    font-weight:bold;
+    color:#E5E4E2;
+    margin-left: 10px;
+    width: 100%;
+}
+
+#datatable-container {
+    width: 1080px;
+    margin: 0 auto;	
+}
+
+#tabs {
+    margin: 10px;	
+}
+
+#vspacer1, #vspacer2, #vspacer3, #vspacer4, #vspacer5  {
+    width: 100%;
+    height: 10px;
+}

@@ -11,7 +11,9 @@ namespace Weatherapp.Controllers
         // GET: FrontPage
         public ActionResult Index()
         {
-            return View();
+            //return View(db.WeatherModels.ToList());
+            return Redirect(Url.Content("~/PWdashboard-master/index.htm"));
         }
+
     }
 }

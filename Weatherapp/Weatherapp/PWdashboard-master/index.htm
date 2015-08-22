@@ -1,0 +1,1281 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+
+    <!--
+    Personal Weather Dashboard version 1.0.3
+    2013-2014 - JF Nutbroek <jfnutbroek@gmail.com>
+    
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+    
+    <title>
+      Karolines weather
+    </title>
+    
+    <!--Load the API's-->
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>  
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&amp;sensor=false"></script>
+    <script type="text/javascript" src="inc/jquery.cookie.js"></script>    
+    <script type="text/javascript" src="inc/jquery.backstretch.min.js"></script>  
+    
+    <!--Load the Stylesheets-->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="inc/pwdashboard.css" />
+
+    <!--Start the Magic!-->
+    <script type="text/javascript">
+    
+      // *** User Configuration ***    
+      
+      // Personal Weather Dashboard ID
+      var stationid   = 'WH1080';
+      var displayname = 'Karolines Weather';
+      
+      // Google map: Location, altitude, lat/lon, station type, how it is connected to the net
+      var mapinfo = new Array(
+	'Indre Arna, Norway', 
+	'28m (91 ft)', 
+	'60.43594, 5.46316', 
+	'WH1080', 
+	'Weewx running on a Pi <object data="inc/raspberry_pi.svg" type="image/svg+xml" width="15" height="15"></object>'
+      );
+    
+      // *** Code starts here ***
+      
+      // Set the main variables
+      var data1, data2, dashboard1, dashboard2, map;
+      var cookiedialog = new Boolean();
+    
+      // Define the data formatting variables
+      var inHg_formatter, tempF_formatter, mph_formatter, inch_formatter, inchhr_formatter;  
+      var radiation_formatter, direction_formatter, humidity_formatter, dateTime_formatter;      
+      var mmh_formatter, mm_formatter, mps_formatter, tempC_formatter, mbar_formatter;
+	    
+      // Initialize form and function
+
+      $(function() {
+
+      // Prepare tabs and initialize google maps when tab no. 8 is opened
+      $("#tabs").tabs();
+      $('#tabs').click('tabsselect', function (event, ui) {
+	if ($("#tabs").tabs('option', 'active') == 8 && !map) {
+	  initializeMap();
+	} else {
+	  google.maps.event.trigger(map, 'resize');
+	}
+      });
+
+      // The configuration tab with accordion style configuration options
+      $("#accordion").accordion({heightStyle: "content", active: false, collapsible: true});
+
+      // Prepare radio buttons for Metric/Imperial and Data Filter On/Off
+      $("#radio_units").buttonset();
+      $("#radio_filter").buttonset();
+      
+      // Imperial or Metric button
+      $("#radio_units").change(function() {   
+	$(".metric").toggle();$(".metric_table").toggle();$(".metric_gauge").toggle();    
+	$(".imperial").toggle();$(".imperial_table").toggle();$(".imperial_gauge").toggle(); 
+	$("#accordion").accordion("option", "active", false);
+        var unit_value = $.cookie('Units');
+        if (unit_value == null && cookiedialog == false) {
+          $("#dialog2").dialog("open");
+          cookiedialog = true;
+        } else if (unit_value != null) {
+          $.cookie('Units', '' + $('input:radio[name=radio_units]:checked').val(), {expires: 365});
+        }
+      });
+      
+      // Bad Data filter on or off
+      $("#radio_filter").change(function() {
+        if ($('input:radio[name=radio_filter]:checked').val() == "FilterOn")
+          filterdata(true);
+        else
+          $("#accordion").accordion("option", "active", false);
+        var filter_value = $.cookie('Filter');
+        if (filter_value == null && cookiedialog == false) {
+          $("#dialog2").dialog("open");
+          cookiedialog = true;
+        } else if (filter_value != null) {
+          $.cookie('Filter', '' + $('input:radio[name=radio_filter]:checked').val(), {expires: 365});
+        }      
+      });
+      
+      // Button to confirm selected time period
+      $("#setdatetime").button();  
+      $("#setdatetime").click(function(){
+        $("#setdatetime").button("disable");
+        updateDashboard();
+      });
+      
+      // Button ro refresh the current weather page gauges
+      $("#refresh-gauges").button();  
+      $("#refresh-gauges").click(function(){
+	$("#refresh-gauges").button("disable");
+        updateGauges();
+      });
+
+      // Buttons ro refresh the charts
+      $(".refresh-charts").button();  
+      $(".refresh-charts").click(function(){
+	$(".refresh-charts").button("disable");
+        updateCharts();
+      });
+      
+      // The progressbars
+      $("#progressbar1").progressbar({value: false});
+      $("#progressbar2").progressbar({value: false});
+      $("#progressbar3").progressbar({value: false});
+      
+      // The error message when no data is available in the selected time period
+      $("#dialog1").dialog({
+        autoOpen: false,
+        resizable: false,            
+        modal: true,
+        buttons: {
+          Ok: function() {
+            $(this).dialog("close");
+	    $("#accordion" ).accordion("option", "active", 1);
+          }
+        }
+      });      
+      
+      // The cookie message
+      $("#dialog2").dialog({
+        autoOpen: false,
+        resizable: false,
+        height:160,
+        modal: true,
+        buttons: {
+          "Allow": function() {
+           $(this).dialog("close");
+           $.cookie('Units', $('input:radio[name=radio_units]:checked').val(), {expires: 365});
+           $.cookie('Filter', $('input:radio[name=radio_filter]:checked').val(), {expires: 365});
+          },
+          "Reject": function() {
+           $(this).dialog("close");
+          }
+        }
+      });
+
+      // The error message when JSON errors are encountered
+      $("#dialog3").dialog({
+        autoOpen: false,
+        resizable: false,            
+        modal: true,
+        buttons: {
+          Ok: function() {
+            $(this).dialog("close");
+	    $(".progressbar-hide").hide();
+	    $("#setdatetime").button("enable");
+          }
+        }
+      });
+      
+      // The time period date picker
+      $("#from").datepicker({    
+       changeMonth: true,
+       numberOfMonths: 3,
+       maxDate: "-1D",       
+       dateFormat: "yy-mm-dd",
+       onClose: function(selectedDate) {
+        $("#to").datepicker("option", "minDate", selectedDate);
+       }
+      });
+      $("#to").datepicker({
+       changeMonth: true,
+       numberOfMonths: 3,
+       maxDate: new Date,    
+       dateFormat: "yy-mm-dd",
+       onClose: function(selectedDate) {
+         $("#from").datepicker("option", "maxDate", selectedDate);
+       }
+      });
+      
+      // Prefill from & to with yesterdays & todays date
+      yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      $('input:text[name=from]').val(yesterday.getFullYear() + '-' + ('0' + (yesterday.getMonth() + 1)).slice(-2) + '-' + ('0' + yesterday.getDate()).slice(-2));
+      $('input:text[name=to]').val(new Date().getFullYear() + '-' + ('0' + (new Date().getMonth() + 1)).slice(-2) + '-' + ('0' + new Date().getDate()).slice(-2));
+      
+      // Update Station Name
+      $('#station-title').replaceWith('<div id="station-title">' + displayname + '</div>');
+ 
+      // Rotate the background image
+      $.backstretch(["inc/backgrounds/01.jpg", "inc/backgrounds/02.jpg", "inc/backgrounds/03.jpg", "inc/backgrounds/04.jpg", "inc/backgrounds/05.jpg"], {
+	fade: 750,
+        duration: 5000
+      }); 
+    
+    });
+    
+    // Prepare Google Map - loaded when the tab is activated
+    function initializeMap() {
+      var image = 'inc/anemometer.gif';
+      var latlon =  mapinfo[2].split(",");
+      var myLatlng = new google.maps.LatLng(Number(latlon[0]), Number(latlon[1]));
+      var contentString = '<div id="content"><div id="siteNotice"></div>' +
+	'<h1 id="firstHeading" class="firstHeading">' + stationid + '</h1>' +
+	'<div id="bodyContent"><div id="stationcontainer" style="width:300px">' +
+	'<div id="stationmenu" style="width:100px;float:left;line-height:160%;">' +
+	'<b>Location:</b><br /><b>Elevation:</b> <br /><b>Lat, Lon:</b> <br />' +
+	'<b>Station Type:</b><br /><b>Set-Up:</b></div>' +
+	'<div id="stationcontent" style="width:200px;float:left;line-height:160%;">';
+      for (var i = 0, ii = mapinfo.length; i < ii; i++) {
+        contentString += mapinfo[i] + '<br />';
+      }
+      contentString += '</div></div></div></div>';
+      var mapOptions = {
+        zoom: 5,
+	center: myLatlng,
+	mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+      var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+	icon: image,
+        title: 'Weather Station ' + stationid
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(map, marker);
+      });
+    }
+  
+    // Load the Dashboard Visualization API 
+    google.load('visualization', '1', {'packages':['controls']});
+      
+    // Set a callback to run when the Google Visualization API has loaded
+    google.setOnLoadCallback(firstRun);
+    
+    // *** The Functions ***
+        
+    // Load the Line Chart data
+    function getData1() {
+    
+	    // Get the UNIX UTC time period
+	    var from = parseDate($('input:text[name=from]').val());
+	    var to = parseDate($('input:text[name=to]').val()) + (24*60*60);
+            
+	    // Fetch the JSON data
+            var jsonData = $.ajax({
+                        url: "pwdashboard.php?ID=" + stationid + "&action=export&from=" + from + "&to=" + to,
+                        dataType:"json",
+                        async: false,
+			error: function(){
+			       $("#dialog3").dialog("open");
+			}			
+            }).responseText;
+            
+            // Import the JSON data to the DataTable
+	    data1 = new google.visualization.DataTable(jsonData);
+
+	    // Verify if we have some data
+	    if (data1.getNumberOfRows() == 0)
+	      $("#dialog1").dialog("open");
+	    
+            // Insert calculated metric columns (assuming JSON upload is imperial)
+            data1.addColumn('number', 'barometer');
+            data1.addColumn('number', 'outTemp');
+            data1.addColumn('number', 'windSpeed');
+            data1.addColumn('number', 'windGust');
+            data1.addColumn('number', 'dewpoint');
+            data1.addColumn('number', 'hourRain');
+            data1.addColumn('number', 'dayRain');
+            for (var i = 0, ii = data1.getNumberOfRows(); i < ii; i++) {
+                        // inHg to mbar
+                        data1.setValue(i, 12, Math.round(data1.getValue(i, 1) * 33.8638866667));
+                        // Fahrenheit to Celcius
+                        data1.setValue(i, 13, Math.round(((data1.getValue(i, 2) - 32) / 1.8) * 100) / 100);
+                        // Mile per hour to Meter per Second
+                        data1.setValue(i, 14, Math.round((data1.getValue(i, 4) * 0.44704) * 100) / 100);
+                        data1.setValue(i, 15, Math.round((data1.getValue(i, 6) * 0.44704) * 100) / 100);
+                        // Fahrenheit to Celcius
+                        data1.setValue(i, 16, Math.round(((data1.getValue(i, 7) - 32) / 1.8) * 100) / 100);
+                        // Inch to mm
+                        data1.setValue(i, 17, Math.round((data1.getValue(i, 8) * 25.4) * 100) / 100);
+                        data1.setValue(i, 18, Math.round((data1.getValue(i, 9) * 25.4) * 100) / 100);
+            } 	    
+
+            // Format the numbers imperial
+            inHg_formatter.format(data1, 1);               
+            tempF_formatter.format(data1, 2);
+            tempF_formatter.format(data1, 7);
+            mph_formatter.format(data1, 4);             
+            mph_formatter.format(data1, 6);
+            inch_formatter.format(data1, 8);          
+            inchhr_formatter.format(data1, 9);            
+           
+            // Format the numbers Universal
+            humidity_formatter.format(data1, 3);   	                
+            direction_formatter.format(data1, 5);           
+            radiation_formatter.format(data1, 10);
+            dateTime_formatter.format(data1, 0);            
+            
+            // Format the numbers metric
+            mbar_formatter.format(data1, 12);            
+            tempC_formatter.format(data1, 13);
+            tempC_formatter.format(data1, 16);            
+            mps_formatter.format(data1, 14);             
+            mps_formatter.format(data1, 15);            
+            mm_formatter.format(data1, 17);           
+            mmh_formatter.format(data1, 18);
+
+    }       
+
+    // Load the Gauge Chart data
+    function getData2() {
+    
+	    // Fetch the JSON data of the last measurement (one row of data)
+            var jsonData = $.ajax({
+                        url: "pwdashboard.php?ID=" + stationid + "&action=export&from=0&to=0",
+                        dataType:"json",
+                        async: false,
+			error: function(){
+			       $("#dialog3").dialog("open");
+			}			
+            }).responseText;
+	    
+            // Import the JSON data to the DataTable
+	    data2 = new google.visualization.DataTable(jsonData);
+	    
+            // Insert calculated metric columns (assuming JSON upload is imperial)
+            data2.addColumn('number', 'barometer');
+            data2.addColumn('number', 'outTemp');
+            data2.addColumn('number', 'windSpeed');
+            data2.addColumn('number', 'windGust');
+            data2.addColumn('number', 'dewpoint');
+            data2.addColumn('number', 'hourRain');
+            data2.addColumn('number', 'dayRain');
+            for (var i = 0, ii = data2.getNumberOfRows(); i < ii; i++) {
+                        // inHg to mbar
+                        data2.setValue(i, 12, Math.round(data2.getValue(i, 1) * 33.8638866667));
+                        // Fahrenheit to Celcius
+                        data2.setValue(i, 13, Math.round(((data2.getValue(i, 2) - 32) / 1.8) * 100) / 100);
+                        // Mile per hour to Meter per Second
+                        data2.setValue(i, 14, Math.round((data2.getValue(i, 4) * 0.44704) * 100) / 100);
+                        data2.setValue(i, 15, Math.round((data2.getValue(i, 6) * 0.44704) * 100) / 100);
+                        // Fahrenheit to Celcius
+                        data2.setValue(i, 16, Math.round(((data2.getValue(i, 7) - 32) / 1.8) * 100) / 100);
+                        // Inch to mm
+                        data2.setValue(i, 17, Math.round((data2.getValue(i, 8) * 25.4) * 100) / 100);
+                        data2.setValue(i, 18, Math.round((data2.getValue(i, 9) * 25.4) * 100) / 100);
+            } 	    
+
+            // Format the numbers imperial
+            inHg_formatter.format(data2, 1);               
+            tempF_formatter.format(data2, 2);
+            tempF_formatter.format(data2, 7);
+            mph_formatter.format(data2, 4);             
+            mph_formatter.format(data2, 6);
+            inch_formatter.format(data2, 9);           
+            inchhr_formatter.format(data2, 8);            
+           
+            // Format the numbers Universal
+            humidity_formatter.format(data2, 3);               
+            direction_formatter.format(data2, 5);           
+            radiation_formatter.format(data2, 10);
+            dateTime_formatter.format(data2, 0);
+            
+            // Format the numbers metric
+            mbar_formatter.format(data2, 12);            
+            tempC_formatter.format(data2, 13);
+            tempC_formatter.format(data2, 16);            
+            mps_formatter.format(data2, 14);             
+            mps_formatter.format(data2, 15);            
+            mm_formatter.format(data2, 18);            
+            mmh_formatter.format(data2, 17);    
+
+    }
+        
+    // Parse the Date string and create a UNIX UTC timestamp
+    function parseDate(input) {
+   
+      var parts = input.match(/(\d+)/g);
+      if (parts != null && parts.length == 3)
+        var stamp = Date.UTC(parts[0], parts[1]-1, parts[2]) / 1000;
+      else 
+        var stamp = Math.round(new Date().getTime() / 1000);
+      offset = new Date().getTimezoneOffset() * 60;
+      stamp = Math.round(stamp) + offset;
+      return stamp;
+
+    }    
+
+    // Filter the raw data 
+    function filterdata(redraw) {
+    
+	  // Show the progressbar
+          $(".progressbar-hide").show();
+	  var baddata = 0;
+	  for (var i = 0, ii = data1.getNumberOfRows(); i < ii; i++) {
+		// Filter #1: Check Humidity & Temperature readings
+		if (data1.getValue(i, 2) == 0 && data1.getValue(i, 3) == 0) {
+		  // Most likely bad measurement when 0 deg.F and 0% humidity
+		  data1.setCell(i, 2, null);
+		  baddata++;
+		}
+                // Filter #2: Check barometer reading
+		if (data1.getValue(i, 1) == 0 && data1.getValue(i, 2) != null) {
+		  // Hopefully bad measurement when 0 barometric pressure 
+		  data1.setCell(i, 2, null);
+		  baddata++;
+		}                
+                // Other filters go here based on Filter #2
+                // ...
+	  }
+	  if (baddata > 0) {
+	    data1.sort(2);
+	    data1.removeRows(0, baddata);
+	    data1.sort(0);
+	  }
+          // Draw the filtered data
+          if (redraw)
+	    dashboard1.draw(data1);
+    }
+
+    function firstRun() {
+
+	  // Set Filter Radio Button
+	  var filter_value = $.cookie('Filter');
+          if (filter_value == null || filter_value == 'FilterOff') {
+            $('input:radio[name=radio_filter][id=radio_filter1]').prop('checked', true).button("refresh");
+          } else {
+            $('input:radio[name=radio_filter][id=radio_filter2]').prop('checked', true).button("refresh");
+	  }
+	  
+          // Set Unit Radio Button
+          var unit_value = $.cookie('Units');
+          if (unit_value == null || unit_value == 'metric') {  
+            $('input:radio[name=radio_units][id=radio_units1]').prop('checked', true).button("refresh");
+	    $(".metric").show();
+            $(".metric_table").show();
+            $(".metric_gauge").show();             
+          } else {
+            $('input:radio[name=radio_units][id=radio_units2]').prop('checked', true).button("refresh");
+	    $(".imperial").show();
+            $(".imperial_table").show();
+            $(".imperial_gauge").show();             
+	  }
+
+          // Define the number formatters 
+	  inHg_formatter      = new google.visualization.NumberFormat({suffix: ' inHg', fractionDigits: 2});            
+	  tempF_formatter     = new google.visualization.NumberFormat({suffix: ' \u00BAF', fractionDigits: 1});            
+	  mph_formatter       = new google.visualization.NumberFormat({suffix: ' mph', fractionDigits: 1});            
+	  inch_formatter      = new google.visualization.NumberFormat({suffix: ' in', fractionDigits: 2});            
+	  inchhr_formatter    = new google.visualization.NumberFormat({suffix: ' in/hr', fractionDigits: 2});  
+	  radiation_formatter = new google.visualization.NumberFormat({suffix: ' W/m^2', fractionDigits: 0});
+	  direction_formatter = new google.visualization.NumberFormat({suffix: '\u00BA', fractionDigits: 0});
+	  humidity_formatter  = new google.visualization.NumberFormat({suffix: '%', fractionDigits: 0});
+	  mmh_formatter       = new google.visualization.NumberFormat({suffix: ' mm/hr', fractionDigits: 0});
+	  mm_formatter        = new google.visualization.NumberFormat({suffix: ' mm', fractionDigits: 0});
+	  mps_formatter       = new google.visualization.NumberFormat({suffix: ' m/s', fractionDigits: 1});
+	  tempC_formatter     = new google.visualization.NumberFormat({suffix: ' \u00BAC', fractionDigits: 1});
+	  mbar_formatter      = new google.visualization.NumberFormat({suffix: ' mbar', fractionDigits: 0});
+          // Define the dateTime format
+          dateTime_formatter  = new google.visualization.DateFormat({pattern: "dd MMM yy HH:mm"});
+
+          // Draw all line charts
+                              
+	  // Get the data
+	  getData1();
+          // Filter data
+          if ($('input:radio[name=radio_filter]:checked').val() == "FilterOn")
+            filterdata(false);
+    	  // Prepare the Dashboard
+	  drawDashboard1();
+	  // Draw the data
+	  dashboard1.draw(data1);
+	  
+	  // Draw all gauges 
+	  
+	  // Get the data
+	  getData2();
+    	  // Prepare the Dashboard
+	  drawDashboard2();
+	  // Draw the data
+	  dashboard2.draw(data2);	  
+	  
+          // Refresh the button with current timestamp
+          $('#button_caption1').html('Refresh<br>' + data2.getValue(0, 0));
+          
+    }
+    
+    function updateGauges() {
+	            
+          // Set all gauges to zero for the animation effect
+          for (var i = 1; i < data2.getNumberOfColumns(); i++) {
+             data2.setCell(0, i, 0);
+          }
+          // Set temperature & barometer gauges to minimum scale (not 0)
+          data2.setCell(0, 1, 27);          
+          data2.setCell(0, 2, -4);          
+          data2.setCell(0, 7, -4);                      
+          data2.setCell(0, 12, 920);          
+          data2.setCell(0, 13, -20);          
+          data2.setCell(0, 16, -20);            
+          
+	  // Draw the zero value data
+	  dashboard2.draw(data2);
+          
+	  // Draw the new data (small delay to watch the animation)
+          setTimeout(function() {
+            // Get the last measurement data
+            getData2();
+	    dashboard2.draw(data2);
+            // Refresh the button with the current timestamp
+            $('#button_caption1').html('Refresh<br>' + data2.getValue(0, 0));	    
+	    // Enable the button again
+	    $("#refresh-gauges").button("enable");        
+          }, 1500);
+          	
+    }    
+
+    function updateCharts() {
+	              
+	  // Get the data
+	  getData1();
+	  
+          // Filter data
+          if ($('input:radio[name=radio_filter]:checked').val() == "FilterOn")
+            filterdata(false);
+	    
+    	  // Redraw the Dashboard
+	  drawDashboard1();
+	  
+	  // Draw the data
+	  dashboard1.draw(data1);
+          	
+    }
+    
+    function updateDashboard() {
+          
+          // Show the progressbar
+          $(".progressbar-hide").show();
+          
+	  // Get the new data for the line charts
+	  getData1();
+          
+          // Filter data
+          if ($('input:radio[name=radio_filter]:checked').val() == "FilterOn")
+            filterdata(false);
+
+    	  // Redraw the Dashboard
+	  drawDashboard1();
+          
+	  // Draw the new data
+	  dashboard1.draw(data1);
+	  
+	  //Enable the button
+	  $("#setdatetime").button("enable");
+                  
+    }  
+	     
+    function drawDashboard1() {
+                                   
+            // Prepare the ChartRangeFilter
+            var dateTimeSlider = new google.visualization.ControlWrapper({
+              'controlType': 'ChartRangeFilter',
+              'containerId': 'dateTime_div',
+              'options': {
+              // Filter by the dateTime axis
+                        'filterColumnIndex': 0,
+                        'ui': {
+                          'chartType': 'LineChart',
+                          'chartOptions': {
+                            'enableInteractivity': false,
+                            'chartArea': {'left': 10, 'top': 10, 'height': 75, 'width': '95%'},
+                            'hAxis': {'baselineColor': 'none'},
+                            'series': [{color: 'red'},{color: 'blue'}]
+                          },
+                          // Display the temperature series
+                          'chartView': {
+                            'columns': [0, 2, 7],                          
+                          },
+                          // 60 minutes in milliseconds = 60 * 60 * 1000 = 3600,000
+                          'minRangeSize': 7200000
+                        }
+              }	      
+            });
+            
+            // Imperial Charts
+            
+            // Temperature Line chart visualization in F
+            var temp_line_F = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'temp_line_F_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Outside Temperature L ' + data1.getColumnRange(2).min + ' \u00BAF / H ' + data1.getColumnRange(2).max + ' \u00BAF' +
+				             ' & Dewpoint L ' + data1.getColumnRange(7).min + ' \u00BAF / H ' + data1.getColumnRange(7).max + ' \u00BAF',
+                                    'vAxis': {title: 'Temperature Fahrenheit'},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'red'},{color: 'blue'}]
+                        },
+                        'view': {'columns': [0, 2, 7]}                         
+            });
+    
+            // Barometer Line chart visualization in inHg
+            var baro_line_inHg = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'baro_line_inHg_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Barometric pressure L ' + data1.getColumnRange(1).min + ' inHg / H ' + data1.getColumnRange(1).max + ' inHg',
+                                    'vAxis': {title: 'inHg'},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'red'}]
+                        },
+                        'view': {'columns': [0, 1]}                         
+            });
+
+            // Windspeed and Windgust Line chart visualization in mph
+            var wind_line_mph = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'wind_line_mph_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Windspeed H ' + data1.getColumnRange(4).max + ' mph' +
+				             ' & Windgust H ' + data1.getColumnRange(6).max + ' mph',
+                                    'vAxis': {title: 'Miles per Hour', viewWindow: {min: 0}},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'blue'},{color: 'red', pointSize: 4, lineWidth: 0}]
+                        },
+                        'view': {'columns': [0, 4, 6]}                         
+            });
+            
+            // Rain Line chart visualization in inch
+            var rain_line_in = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'rain_line_in_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Precipitation per hour H ' + data1.getColumnRange(8).max + ' in/hr' +
+				             ' & Precipitation per day H ' + data1.getColumnRange(9).max + ' in',				    
+                                    'vAxis': {title: 'in', viewWindow: {min: 0}},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'blue'},{color: 'green'}]
+                        },
+                        'view': {'columns': [0, 8, 9]}                         
+            });            
+            
+            // Define the table in imperial units
+            var imperial_table = new google.visualization.ChartWrapper({
+                        'chartType': 'Table',
+                        'containerId': 'imperial_table_div',
+                        'options': {
+                                    'allowHtml': true
+                        },
+                       'view': {'columns': [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]} 
+            });
+            
+            // Universal Charts
+            
+            // Humidity Line chart visualization in %
+            var humidity_line = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'humidity_line_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Humidity L ' + data1.getColumnRange(3).min + '% / H ' + data1.getColumnRange(3).max + '%',
+                                    'vAxis': {title: '%', ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'blue'}]
+                        },
+                        'view': {'columns': [0, 3]}                         
+            });
+
+            // Wind direction Line chart visualization in deg
+            var winddir_line_deg = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'winddir_line_deg_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Wind Direction',
+                                    'vAxis': {title: '0 to 360 Degrees', ticks: [{v:0, f:"N"}, {v:90, f:"E"}, {v:180, f:"S"}, {v:270, f:"W"}, {v:360, f:"N"}]},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'green', pointSize: 4, lineWidth: 0}]
+                        },
+                        'view': {'columns': [0, 5]}                         
+            });            
+   
+            // Radiation Line chart visualization in W/m2
+            var radiation_line_wm = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'radiation_line_wm_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Radiation L ' + data1.getColumnRange(10).min + ' W/m^2 / H ' + data1.getColumnRange(10).max + ' W/m^2',
+                                    'vAxis': {title: 'W/m^2', viewWindow: {min: 0}},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'red'}]
+                        },
+                        'view': {'columns': [0, 10]}                         
+            });   
+   
+            // UV Index Line chart visualization
+            var uv_line = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'uv_line_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'UV Index L ' + data1.getColumnRange(11).min + ' / H ' + data1.getColumnRange(11).max,				    
+                                    'vAxis': {ticks: [{v:0, f:"Low"}, 1, 2, {v:3, f:"Moderate"}, 4, 5, {v:6, f:"High"}, 7, {v:8, f:"Very High"}, 9, 10, {v:11, f:"Extreme"}]},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'red'}]
+                        },
+                        'view': {'columns': [0, 11]}                         
+            });     
+           
+            // Metric Charts
+     
+            // Temperature Line chart visualization in C
+            var temp_line_C = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'temp_line_C_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Outside Temperature L ' + data1.getColumnRange(13).min + ' \u00BAC / H ' + data1.getColumnRange(13).max + ' \u00BAC' +
+				             ' & Dewpoint L ' + data1.getColumnRange(16).min + ' \u00BAC / H ' + data1.getColumnRange(16).max + ' \u00BAC',
+                                    'vAxis': {title: 'Temperature Celcius'},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'red'},{color: 'blue'}]
+                        },
+                        'view': {'columns': [0, 13, 16]}                         
+            });
+
+            // Barometer Line chart visualization in mbar
+            var baro_line_mbar = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'baro_line_mbar_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Barometric pressure L ' + data1.getColumnRange(12).min + ' mbar / H ' + data1.getColumnRange(12).max + ' mbar',
+                                    'vAxis': {title: 'mbar', format:'####'},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'red'}]
+                        },
+                        'view': {'columns': [0, 12]}                         
+            });
+
+            // Windspeed and Windgust Line chart visualization in m/s
+            var wind_line_ms = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'wind_line_ms_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Windspeed H ' + data1.getColumnRange(14).max + ' m/s' +
+				             ' & Windgust H ' + data1.getColumnRange(15).max + ' m/s',
+                                    'vAxis': {title: 'Meter per Second', viewWindow: {min: 0}},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'blue'},{color: 'red', pointSize: 4, lineWidth: 0}]
+                        },
+                        'view': {'columns': [0, 14, 15]}                         
+            });
+
+            // Rain Line chart visualization in mm
+            var rain_line_mm = new google.visualization.ChartWrapper({  
+                        'chartType' : 'LineChart',  
+                        'containerId' : 'rain_line_mm_div',
+                        'options': {
+                                    'width': 800,
+                                    'height': 320,
+                                    'title': 'Precipitation per hour H ' + data1.getColumnRange(17).max + ' mm/hr' +
+				             ' & Precipitation per day H ' + data1.getColumnRange(18).max + ' mm',
+                                    'vAxis': {title: 'mm', viewWindow: {min: 0}},
+                                    'hAxis': {title: 'Time'},
+                                    'series': [{color: 'blue'},{color: 'green'}]
+                        },
+                        'view': {'columns': [0, 17, 18]}                         
+            });  
+            
+            // Define the table in metric units
+            var metric_table = new google.visualization.ChartWrapper({
+                        'chartType': 'Table',
+                        'containerId': 'metric_table_div',
+                        'options': {
+                                    'allowHtml': true                                 
+                        },
+                       'view': {'columns': [0, 12, 13, 3, 14, 5, 15, 16, 17, 18, 10 ,11]} 
+            });      
+            
+	    // Create the dashboard
+            dashboard1 = new google.visualization.Dashboard(document.getElementById('dashboard1'));
+	    
+            // Bind the elements to the dashboard
+            
+            // Imperial charts
+            dashboard1.bind(dateTimeSlider, [temp_line_F, baro_line_inHg, wind_line_mph, rain_line_in]);
+            // Universal Charts
+            dashboard1.bind(dateTimeSlider, [humidity_line, winddir_line_deg, radiation_line_wm, uv_line]);
+            // Metric Charts
+            dashboard1.bind(dateTimeSlider, [temp_line_C, baro_line_mbar, wind_line_ms, rain_line_mm]);
+            
+            // Bind the tables
+            dashboard1.bind(dateTimeSlider, [imperial_table, metric_table]);
+
+            // Hide progress bar and close accordion once drawing has completed
+            google.visualization.events.addListener(dashboard1, 'ready',
+            function() {
+	      var active = $("#accordion").accordion("option", "active");
+	      if (active != 2) {
+                $("#accordion").accordion("option", "active", false);
+                // Hide the progressbar
+                $(".progressbar-hide").hide();
+		// Enable the buttons
+	        $(".refresh-charts").button("enable");
+	      }
+            });
+
+    }
+    
+    function drawDashboard2() {
+                                   
+            // Current Weather page with 9 Gauges
+
+            // Dummy slider to control last measurement
+            var dummy_slider = new google.visualization.ControlWrapper({
+              'controlType': 'NumberRangeFilter',
+              'containerId': 'dummy_slider',
+              'options': {
+                        'filterColumnLabel': 'outTemp'
+              }
+            }); 
+	    
+            // Metric
+
+            // Gauge charts visualization in metric
+            var gauge_tc = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_tc_div',
+                        'options': {
+                                'width': 400,
+                                'height': 200,
+                                'min': -20,
+                                'max': 40,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["-20", "-10", "0", "10", "20", "30", "40"]
+                        },
+                        'view': {'columns': [13, 16]}
+            });     
+  
+            // Gauge charts visualization in metric
+            var gauge_wms = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_wms_div',
+                        'options': {
+                                'width': 400,
+                                'height': 200,                                    
+                                'min': 0,
+                                'max': 30,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["0", "5", "10", "15", "20", "25", "30"]
+                        },
+                        'view': {'columns': [14, 15]}
+            });    
+
+            // Gauge charts visualization in metric
+            var gauge_metric_wdir = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_metric_wdir_div',
+                        'options': {
+                                'width': 200,
+                                'height': 200,                                      
+                                'min': 0,
+                                'max': 360,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"]
+                        },
+                        'view': {'columns': [5]}
+            }); 
+
+            // Gauge charts visualization in metric
+            var gauge_pmbar = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_pmbar_div',
+                        'options': {
+                                'width': 200,
+                                'height': 200,                                      
+                                'min': 920,
+                                'max': 1080,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["920", "960", "1000", "1040", "1080"]
+                        },
+                        'view': {'columns': [12]}
+            });
+ 
+            // Gauge charts visualization in metric
+            var gauge_rmm = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_rmm_div',
+                        'options': {
+                                'width': 400,
+                                'height': 200,                                    
+                                'min': 0,
+                                'max': 140,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["0", "20", "40", "60", "80", "100", "120", "140"]
+                        },
+                        'view': {'columns': [17, 18]}
+            });
+
+            // Gauge charts visualization in metric
+            var gauge_metric_h = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_metric_h_div',
+                        'options': {
+                                'width': 200,
+                                'height': 200,                                    
+                                'min': 0,
+                                'max': 100,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["0", "20", "40", "60", "80", "100"]
+                        },
+                        'view': {'columns': [3]}
+            });            
+            
+            // Imperial           
+            
+            // Gauge charts visualization in imperial
+            var gauge_tf = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_tf_div',
+                        'options': {
+                                'width': 400,
+                                'height': 200,                                      
+                                'min': -4,
+                                'max': 104,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["-4", "14", "32", "50", "68", "86", "104"]
+                        },
+                        'view': {'columns': [2, 7]}
+            });               
+	    
+            // Gauge charts visualization in imperial
+            var gauge_wmph = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_wmph_div',
+                        'options': {
+                                'width': 400,
+                                'height': 200,                                      
+                                'min': 0,
+                                'max': 72,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["0", "12", "24", "36", "48", "60", "72"]
+                        },
+                        'view': {'columns': [4, 6]}
+            });    
+
+            // Gauge charts visualization in metric
+            var gauge_imperial_wdir = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_imperial_wdir_div',
+                        'options': {
+                                'width': 200,
+                                'height': 200,                                      
+                                'min': 0,
+                                'max': 360,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["N", "NE", "E", "SE", "S", "SW", "W", "NW", "N"]
+                        },
+                        'view': {'columns': [5]}
+            }); 
+
+            // Gauge charts visualization in imperial
+            var gauge_pinhg = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_pinhg_div',
+                        'options': {
+                                'width': 200,
+                                'height': 200,                                      
+                                'min': 27,
+                                'max': 34,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["27", "28", "30", "32", "34"]
+                        },
+                        'view': {'columns': [1]}
+            });
+ 
+            // Gauge charts visualization in imperial
+            var gauge_rin = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_rin_div',
+                        'options': {
+                                'width': 400,
+                                'height': 200,                                      
+                                'min': 0,
+                                'max': 5.6,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["0", "0.8", "1.6", "2.4", "3.2", "4", "4.8", "5.6"]
+                        },
+                        'view': {'columns': [8, 9]}
+            });         
+
+            // Gauge charts visualization in imperial
+            var gauge_imperial_h = new google.visualization.ChartWrapper({
+                        'chartType': 'Gauge',                        
+                        'containerId': 'gauge_imperial_h_div',
+                        'options': {
+                                'width': 200,
+                                'height': 200,                                      
+                                'min': 0,
+                                'max': 100,
+                                'animation': {duration: 1000, easing: 'inAndOut'},                                
+                                'majorTicks': ["0", "20", "40", "60", "80", "100"]
+                        },
+                        'view': {'columns': [3]}
+            });
+            
+	    // Create the dashboard
+            dashboard2 = new google.visualization.Dashboard(document.getElementById('dashboard2'));
+	    
+            // Bind the elements to the dashboard
+            
+            // Bind the metric current weather elements to the dashboard
+            dashboard2.bind(dummy_slider, [gauge_tc, gauge_wms, gauge_pmbar, gauge_rmm, gauge_metric_h, gauge_metric_wdir]);
+            // Bind the imperial current weather elements to the dashboard           
+            dashboard2.bind(dummy_slider, [gauge_tf, gauge_wmph, gauge_pinhg, gauge_rin, gauge_imperial_h, gauge_imperial_wdir]);
+
+            // Show weather icons & refresh button once gauges are visible
+            google.visualization.events.addListener(dashboard2, 'ready',
+            function() {
+	      $(".progressbar-hide").hide();
+	      $(".icons").show();
+	      $("#refresh-control").show();
+	      $.backstretch("resize");
+            });
+
+    }
+       	
+    </script>
+  </head>
+  <body>
+    <div id="page-container">
+            <div id="station-title"></div>
+            <div id="tabs">
+            <ul>	    
+                        <li><a href="#tabs-1">Current Weather</a></li>
+                        <li><a href="#tabs-2">Temperature</a></li>
+                        <li><a href="#tabs-3">Barometer</a></li>
+                        <li><a href="#tabs-4">Wind</a></li>
+                        <li><a href="#tabs-5">Precipitation</a></li>
+                        <li><a href="#tabs-6">Humidity</a></li>
+                        <li><a href="#tabs-7">Radiation &amp; UV</a></li>                        
+                        <li><a href="#tabs-8">Datatable</a></li>
+                        <li><a href="#tabs-9">Map</a></li>     
+                        <li><a href="#tabs-10">Preferences</a></li>
+            </ul>            
+
+            <div id="dashboard2">
+		
+                        <div id="tabs-1">
+                          <div id="gauge-container">
+                                    
+                            <div id="refresh-control"><div id="button-container"><button id="refresh-gauges" name="refresh-gauges"><span id="button_caption1" class="ui-button-text">Refresh</span></button></div></div>
+			    <div id="dialog1" title="Error Message">
+                                <p><span class="ui-icon ui-icon-alert"></span>
+                                    No data available for the selected period.
+                                </p>
+			    </div>
+			    <div id="dialog3" title="Error Message">
+                                <p><span class="ui-icon ui-icon-alert"></span>
+                                    Unable to communicate with the database.
+				    Please verify stationid & password.
+				    Please verify if database is accessible.
+                                </p>
+			    </div>                        
+			
+                             <div id="vspacer1"></div>     
+                             <div id="effect1" class="ui-widget-content ui-corner-all">
+            		       <div id="progressbar1" class="progressbar-hide"><div id="label1" class="progress-label">Please wait .. loading data ...</div></div>                        
+                                 <div id="icon-div1" class="icons"><object data="inc/temperature.svg" type="image/svg+xml" width="45" height="45"></object></div> 
+				 <div id="center_gauges_metric1" class="metric_gauge">
+                                 <div id="gauge_tc_div" class="double_gauge"></div>
+			         <div id="gauge_pmbar_div" class="single_gauge"></div>
+                               </div>
+                               <div id="center_gauges_imperial1" class="imperial_gauge">
+                                 <div id="gauge_tf_div" class="double_gauge"></div>
+			         <div id="gauge_pinhg_div" class="single_gauge"></div>
+                               </div>                               
+                             </div>
+                             
+                             <div id="vspacer2"></div>
+                             <div id="effect2" class="ui-widget-content ui-corner-all">
+                              <div id="icon-div2" class="icons"><object data="inc/rain.svg" type="image/svg+xml" width="45" height="45"></object></div>                                       
+                              <div id="center_gauges_metric2" class="metric_gauge"> 
+			       <div id="gauge_rmm_div" class="double_gauge"></div>			     
+                               <div id="gauge_metric_h_div" class="single_gauge"></div>
+                              </div>
+                               <div id="center_gauges_imperial2" class="imperial_gauge">                           
+			         <div id="gauge_rin_div" class="double_gauge"></div>
+                                 <div id="gauge_imperial_h_div" class="single_gauge"></div>			       
+                               </div>                              
+                             </div>
+                             
+                             <div id="vspacer3"></div>
+                             <div id="effect3" class="ui-widget-content ui-corner-all">
+                              <div id="icon-div3" class="icons"><object data="inc/wind.svg" type="image/svg+xml" width="45" height="45"></object></div> 
+                              <div id="center_gauges_metric3" class="metric_gauge">                                     
+                               <div id="gauge_wms_div" class="double_gauge"></div>
+			       <div id="gauge_metric_wdir_div" class="single_gauge"></div>
+                              </div>
+                               <div id="center_gauges_imperial3" class="imperial_gauge">                           
+                                 <div id="gauge_wmph_div" class="double_gauge"></div>
+			         <div id="gauge_imperial_wdir_div" class="single_gauge"></div>
+                               </div>                               
+                             </div>
+
+                          </div>
+                        
+                            <div id="dummy">
+  			      <div id="dummy_slider" style="display: none;"></div>
+                            </div>
+                            
+                        </div>
+			
+            </div>
+			
+	    <div id="dashboard1">
+	                  
+	                <div id="tabs-2">
+			  <div class="chart-refresh-container"><button class="refresh-charts" name="refresh-charts">Refresh</button></div>			  
+                          <div id="temp_line_F_div" class="imperial"></div>
+                          <div id="temp_line_C_div" class="metric"></div>                          
+                        </div>
+                        
+                        <div id="tabs-3">
+			  <div class="chart-refresh-container"><button class="refresh-charts" name="refresh-charts">Refresh</button></div>			  
+                          <div id="baro_line_inHg_div" class="imperial"></div>
+                          <div id="baro_line_mbar_div" class="metric"></div>                          
+                        </div>
+                        
+                        <div id="tabs-4">
+			  <div class="chart-refresh-container"><button class="refresh-charts" name="refresh-charts">Refresh</button></div>			  
+                          <div id="wind_line_mph_div" class="imperial"></div>
+                          <div id="wind_line_ms_div" class="metric"></div>
+                          <div id="winddir_line_deg_div" class="linegraph"></div>                          
+                        </div>
+                        
+                        <div id="tabs-5">
+			  <div class="chart-refresh-container"><button class="refresh-charts" name="refresh-charts">Refresh</button></div>			  
+                          <div id="rain_line_in_div" class="imperial"></div>
+                          <div id="rain_line_mm_div" class="metric"></div> 
+                        </div>
+                        
+                        <div id="tabs-6">
+			   <div class="chart-refresh-container"><button class="refresh-charts" name="refresh-charts">Refresh</button></div>			  
+                           <div id="humidity_line_div" class="linegraph"></div> 
+                        </div>
+                        
+                        <div id="tabs-7">
+			    <div class="chart-refresh-container"><button class="refresh-charts" name="refresh-charts">Refresh</button></div>			  
+                           <div id="radiation_line_wm_div" class="linegraph"></div>
+                           <div id="uv_line_div" class="linegraph"></div>                           
+                        </div>
+                        
+                        <div id="tabs-8">
+                          <div id="datatable-container">
+                            <div id="imperial_table_div" class="imperial_table"></div>
+                            <div id="metric_table_div" class="metric_table"></div>
+                          </div>
+                        </div>
+                        
+                        <div id="tabs-9">
+                          <div id="map-canvas" style="height: 400px;"></div>
+                        </div>
+			
+                        <div id="tabs-10">
+                          <div id="dialog2" title="Cookie Message">
+                            <p><span class="ui-icon ui-icon-alert"></span>
+                                    This website uses cookies to remember your preferences.
+                            </p>
+                          </div>
+                          <div id="accordion">
+                                    <h3>View Charts in metric or imperial units</h3>
+                                    <div class="pane" style="height: 40px;"><form>
+                                    <div id="radio_units">
+                                      <input type="radio" id="radio_units1" name="radio_units" value="metric" /><label for="radio_units1">Display metric Units</label>                                                
+                                      <input type="radio" id="radio_units2" name="radio_units" value="imperial" /><label for="radio_units2">Display imperial Units</label>
+                                    </div>
+                                    </form></div>
+                                    <h3>Select time range</h3>
+                                    <div class="pane" style="height: 120px;">
+                                                <label for="from">From</label>
+                                                <input type="text" id="from" name="from" />
+                                                <label for="to">to</label>
+                                                <input type="text" id="to" name="to" />
+                                                <div style="margin-top: 10px;"><button id="setdatetime" name="setdatetime">Apply</button></div>
+						<div id="vspacer4"></div>
+						<div id="progressbar2" class="progressbar-hide"><div id="label2" class="progress-label">Please wait .. loading data ...</div></div>
+                                    </div>                                  
+                                    <h3>Zoom in on current time range</h3>
+                                    <div class="pane" style="height: 200px;"><div id="dateTime_div"></div></div>
+				    <h3>Data Filter</h3>
+				    <div class="pane" style="height: 100px;">
+					<div id="radio_filter">
+                                          <input type="radio" id="radio_filter1" name="radio_filter" value="FilterOff" /><label for="radio_filter1">Do not filter data</label>                                                
+                                          <input type="radio" id="radio_filter2" name="radio_filter" value="FilterOn" /><label for="radio_filter2">Filter data</label>
+                                        </div>
+					<div id="vspacer5"></div>
+					<div id="progressbar3" class="progressbar-hide"><div id="label3" class="progress-label">Please wait .. filtering data ...</div></div>
+				    </div>
+                                    <h3>Version information</h3>
+                                    <div class="pane" style="height: 175px;">
+                                                <p>
+                                                Version 1.0.3<br />
+                                                2013-2014 - JF Nutbroek - jfnutbroek@gmail.com
+                                                <p>
+                                                This program is free software: you can redistribute it and/or modify
+                                                it under the terms of the GNU General Public License as published by
+                                                the Free Software Foundation, either version 3 of the License, or
+                                                (at your option) any later version.
+                                                </p><p>
+                                                This program is distributed in the hope that it will be useful,
+                                                but WITHOUT ANY WARRANTY; without even the implied warranty of
+                                                MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+                                                GNU General Public License for more details.
+                                                </p><p>
+                                                You should have received a copy of the GNU General Public License
+                                                along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.
+                                                </p>
+                                    </div>                                    
+                          </div>
+                        </div>                  
+            </div>
+            </div>
+            <div id="footer">
+                Personal Weather Dashboard - <a href="http://www.mywebmymail.com" style="color: #E5E4E2;">www.mywebmymail.com</a>
+            </div>
+    </div>	    
+  </body>
+</html>
+

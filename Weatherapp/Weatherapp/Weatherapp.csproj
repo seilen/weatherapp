@@ -266,7 +266,9 @@
     <None Include="Properties\PublishProfiles\karolinesweather.pubxml" />
     <Content Include="PWdashboard-master\database\.htaccess" />
     <Content Include="PWdashboard-master\LICENSE" />
-    <Content Include="PWdashboard-master\pwdashboard.php" />
+    <Content Include="PWdashboard-master\pwdashboard.php">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="PWdashboard-master\pwdashboard.py" />
     <Content Include="PWdashboard-master\README.md" />
     <None Include="Properties\PublishProfiles\karolinesweathersite.pubxml" />

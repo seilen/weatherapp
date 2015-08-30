@@ -1,6 +1,0 @@
-<Limit GET>
-Order Allow,Deny 
-Allow from localhost 127.0.0.1
-Deny from all
-</Limit> 
-

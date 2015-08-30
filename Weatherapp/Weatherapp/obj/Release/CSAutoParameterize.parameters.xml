@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="WeatherappContext-Web.config Connection String" description="WeatherappContext Connection String used in web.config by the application to access the database." defaultValue="Data Source=(localdb)\MSSQLLocalDB; Initial Catalog=WeatherappContext-20150512213521; Integrated Security=True; MultipleActiveResultSets=True; AttachDbFilename=|DataDirectory|WeatherappContext-20150512213521.mdf" tags="SqlConnectionString">
-    <parameterEntry kind="XmlFile" scope="D:\\Source\\Weatherapp\\Weatherapp\\Weatherapp\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='WeatherappContext']/@connectionString" />
-  </parameter>
-</parameters>

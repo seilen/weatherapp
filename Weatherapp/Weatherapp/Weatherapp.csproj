@@ -273,7 +273,7 @@
     <Content Include="PWdashboard-master\README.md" />
     <None Include="Properties\PublishProfiles\karolinesweathersite.pubxml" />
     <Content Include="PWdashboard-master\database\phpLiteAdmin_v1-9-6\phpliteadmin.config.sample.php" />
-    <Content Include="PWdashboard-master\database\phpLiteAdmin_v1-9-6\phpliteadmin.php" />
+    <Content Include="PWdashboard-master\database\phpliteadmin.php" />
     <Content Include="PWdashboard-master\database\phpLiteAdmin_v1-9-6\readme.md" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\Chart.js" />

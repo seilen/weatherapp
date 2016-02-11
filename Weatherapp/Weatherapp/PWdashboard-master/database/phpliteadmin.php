@@ -41,6 +41,8 @@
 //    You can set only your custom settings in phpliteadmin.config.php. All other settings will be set to defaults.
 // 2. Change parameters directly in main phpliteadmin.php file
 //
+//
+//
 // Please see https://bitbucket.org/phpliteadmin/public/wiki/Configuration for more details
 
 //password to gain access
